@@ -2,6 +2,22 @@ package net.belleron.gateway;
 
 import net.belleron.gateway.smsgateway.*;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.URLEncoder;
+ 
+import org.apache.http.*;
+// import org.apache.http.HttpResponse;
+// import org.apache.http.client.HttpClient;
+// import org.apache.http.client.methods.HttpGet;
+// import org.apache.http.impl.client.DefaultHttpClient;
+
+// import org.apache.http.NameValuePair;
+// import org.apache.http.message.BasicNameValuePair;
+// import org.apache.http.client.entity.UrlEncodedFormEntity;
+// import org.apache.http.client.methods.HttpPost;
+
+
 public class main {
 
 	public static void main(String[] args) throws Exception {
@@ -34,30 +50,35 @@ public class main {
 
 			//System.out.println(command + "\n" + param + "\n" + message.toString() + "\n");
 
-			smsgateway http = new smsgateway();
+			//smsgateway http = new smsgateway();
+
+			main http = new main();
 
 			switch (command) {
-				case "getcredits" : http.getCredits(); 
-					System.out.println(http.getSMSCredits());
-					System.out.println(http.getResponseCode());
-					System.out.println(http.getResponseResult());
+				case "getcredits" : 
+
+					http.getCredits();
+					// http.getCredits(); 
+					// System.out.println(http.getSMSCredits());
+					// System.out.println(http.getResponseCode());
+					// System.out.println(http.getResponseResult());
 					break;
-				case "getsendname" : http.getSendname();
-					break;
-				case "gethistory" : 
-					if (param == "") {
-						param = "1";
-					}
-					http.getHistory(param);
-					break;
-				case "setsendname" : 
-					if (param == "") {
-						param = "smsgateway1";
-					}
-					http.setSendName(param);
-					break;
-				case "sendmessage" : http.sendMessage(param, message.toString().toString().substring(0, message.toString().length()-1));
-					break;
+				// case "getsendname" : http.getSendname();
+				// 	break;
+				// case "gethistory" : 
+				// 	if (param == "") {
+				// 		param = "1";
+				// 	}
+				// 	http.getHistory(param);
+				// 	break;
+				// case "setsendname" : 
+				// 	if (param == "") {
+				// 		param = "smsgateway1";
+				// 	}
+				// 	http.setSendName(param);
+				// 	break;
+				// case "sendmessage" : http.sendMessage(param, message.toString().toString().substring(0, message.toString().length()-1));
+				// 	break;
 			};
 
 
@@ -91,5 +112,33 @@ public class main {
 	                "smsgateway getcredits\n" +
 	                "smsgateway sendmessage 0612345678 this is a test\n");
     }
+
+    public void getCredits() throws Exception { 
+
+		org.apache.http.client.HttpClient client = new org.apache.http.impl.client.DefaultHttpClient();
+		org.apache.http.client.methods.HttpGet request = new org.apache.http.client.methods.HttpGet("https://smsservicecenter.nl/api.php/" + "getcredits/?userhash=" + "5d50a93ac9c15d278fc7077eccb97d60");
+		
+		// add request header
+		request.addHeader("User-Agent", "Mozilla/5.0");
+
+		org.apache.http.HttpResponse response = client.execute(request);
+
+		//System.out.println("\nCredits : \n");
+		//System.out.println("Response Code : " + response.getStatusLine().getStatusCode());
+		//this.responseCode = response.getStatusLine().getStatusCode();
+ 
+		BufferedReader rd = new BufferedReader(
+                       new InputStreamReader(response.getEntity().getContent()));
+ 
+		StringBuffer result = new StringBuffer();
+		String line = "";
+		while ((line = rd.readLine()) != null) {
+			result.append(line);
+		}
+ 
+		//System.out.println(result.toString());
+ 		//this.responseResult = result.toString();
+	}
+
 
 }

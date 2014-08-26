@@ -55,7 +55,7 @@ public class smsgateway {
 
 		HttpClient client = new DefaultHttpClient();
 		HttpGet request = new HttpGet(URL + "getcredits/?userhash=" + USERHASH);
-
+		
 		// add request header
 		request.addHeader("User-Agent", USER_AGENT);
 
