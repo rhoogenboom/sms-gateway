@@ -76,6 +76,9 @@ public class smsgateway {
  
 		//System.out.println(result.toString());
  		this.responseResult = result.toString();
+
+		// Gson gson = new Gson();
+ 		// System.out.println(gson.toJson(result.toString()));
 	}
 
 
