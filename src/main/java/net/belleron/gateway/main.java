@@ -2,9 +2,6 @@ package net.belleron.gateway;
 
 import net.belleron.gateway.smsgateway.*;
 
-import com.google.code.gson;
-
-
 public class main {
 
 	public static void main(String[] args) throws Exception {
@@ -35,8 +32,6 @@ public class main {
 				}
 			}
 
-			//System.out.println(command + "\n" + param + "\n" + message.toString() + "\n");
-
 			smsgateway http = new smsgateway();
 
 			switch (command) {
@@ -46,6 +41,9 @@ public class main {
 					System.out.println(http.getResponseResult());
 					break;
 				case "getsendname" : http.getSendname();
+					System.out.println(http.getSMSSendname());
+					System.out.println(http.getResponseCode());
+					System.out.println(http.getResponseResult());
 					break;
 				case "gethistory" : 
 					if (param == "") {
@@ -58,6 +56,8 @@ public class main {
 						param = "smsgateway1";
 					}
 					http.setSendName(param);
+					System.out.println(http.getResponseCode());
+					System.out.println(http.getResponseResult());
 					break;
 				case "sendmessage" : http.sendMessage(param, message.toString().toString().substring(0, message.toString().length()-1));
 					break;

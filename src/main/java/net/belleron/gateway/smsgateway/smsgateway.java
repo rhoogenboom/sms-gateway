@@ -1,5 +1,10 @@
 package net.belleron.gateway.smsgateway;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URLEncoder;
@@ -14,6 +19,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
  
+
 public class smsgateway {
  
 	private final String USER_AGENT = "Mozilla/5.0";
@@ -77,8 +83,24 @@ public class smsgateway {
 		//System.out.println(result.toString());
  		this.responseResult = result.toString();
 
-		// Gson gson = new Gson();
- 		// System.out.println(gson.toJson(result.toString()));
+		JsonParser parser = new JsonParser();
+        // The JsonElement is the root node. It can be an object, array, null or
+        // java primitive.
+        JsonElement element = parser.parse(result.toString());
+        // use the isxxx methods to find out the type of jsonelement. In our
+        // example we know that the root object is the Albums object and
+        // contains an array of dataset objects
+        if (element.isJsonObject()) {
+            JsonObject creditObj = element.getAsJsonObject();
+            this.smscredits = Long.valueOf(creditObj.get("credits").getAsInt());
+            // JsonArray datasets = albums.getAsJsonArray("dataset");
+            // for (int i = 0; i < datasets.size(); i++) {
+            //     JsonObject dataset = datasets.get(i).getAsJsonObject();
+            //     System.out.println(dataset.get("album_title").getAsString());
+            // }
+        }
+
+		//System.out.println();
 	}
 
 
@@ -93,8 +115,9 @@ public class smsgateway {
 
 		HttpResponse response = client.execute(request);
 
-		System.out.println("\nGet send name : \n");
-		System.out.println("Response Code : " + response.getStatusLine().getStatusCode());
+		// System.out.println("\nGet send name : \n");
+		// System.out.println("Response Code : " + response.getStatusLine().getStatusCode());
+		this.responseCode = response.getStatusLine().getStatusCode();
  
 		BufferedReader rd = new BufferedReader(
                        new InputStreamReader(response.getEntity().getContent()));
@@ -105,7 +128,12 @@ public class smsgateway {
 			result.append(line);
 		}
 
-		System.out.println(result.toString());
+		JsonParser parser = new JsonParser();
+        JsonElement element = parser.parse(result.toString());
+        if (element.isJsonObject()) {
+            JsonObject responseObj = element.getAsJsonObject();
+            this.smssendname = responseObj.get("sendname").getAsString();
+        }
 	}
 
 
@@ -132,6 +160,7 @@ public class smsgateway {
 			result.append(line);
 		}
 
+ 		this.responseResult = result.toString();
 		System.out.println(result.toString());
 	}
  
@@ -146,8 +175,9 @@ public class smsgateway {
 
 		HttpResponse response = client.execute(request);
 
-		System.out.println("\nSetting send name to : " + name + "\n");
-		System.out.println("Response Code : " + response.getStatusLine().getStatusCode());
+		// System.out.println("\nSetting send name to : " + name + "\n");
+		// System.out.println("Response Code : " + response.getStatusLine().getStatusCode());
+ 		this.responseCode = response.getStatusLine().getStatusCode();
  
 		BufferedReader rd = new BufferedReader(
                        new InputStreamReader(response.getEntity().getContent()));
@@ -172,9 +202,10 @@ public class smsgateway {
 
 		HttpResponse response = client.execute(request);
 
-		System.out.println("\nSending to number: " + number + "\n");
-		System.out.println("Message: " + message + "\n");
-		System.out.println("Response Code : " + response.getStatusLine().getStatusCode());
+		// System.out.println("\nSending to number: " + number + "\n");
+		// System.out.println("Message: " + message + "\n");
+		// System.out.println("Response Code : " + response.getStatusLine().getStatusCode());
+ 		this.responseCode = response.getStatusLine().getStatusCode();
  
 		BufferedReader rd = new BufferedReader(
                        new InputStreamReader(response.getEntity().getContent()));
